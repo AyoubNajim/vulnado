@@ -19,13 +19,7 @@ pipeline {
       }
     }
     
-    stage ('Deploy-To-Tomcat') {
-            steps {
-           sshagent(['tomcat']) {
-                sh 'scp -o StrictHostKeyChecking=no target/*.war ayoub@ubuntu:/var/lib/tomcat9/webapps/ROOT/index.html'
-              }      
-           }       
-    }
+    stage
     
   }
 }
