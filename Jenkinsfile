@@ -4,14 +4,14 @@ pipeline {
     maven 'Maven'
   }
   stages {
-    stage ('Initialize') {
+    /*stage ('Initialize') {
       steps {
         sh '''
                     echo "PATH = ${PATH}"
                     echo "M2_HOME = ${M2_HOME}"
             ''' 
       }
-    }
+    }*/
     
     stage ('Source Composition Analysis') {
       steps {
