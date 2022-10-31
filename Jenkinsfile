@@ -1,4 +1,4 @@
-pipeline {
+/*pipeline {
   agent any
   tools {
     maven 'Maven'
@@ -33,9 +33,38 @@ pipeline {
       }
     }*/
     
-    stage ("DAST") {
+   /* stage ("DAST") {
 	steps {
 		sh "docker run -t owasp/zap2docker-stable zap-baseline.py -t http://127.0.0.1:1337 || true"
 		}
   }
+}
+*/
+// Jenkinsfile (Declarative Pipeline) for integration of Dastardly, from Burp Suite.
+
+pipeline {
+    agent any
+    stages {
+        stage ("Docker Pull Dastardly from Burp Suite container image") {
+            steps {
+                sh 'docker pull public.ecr.aws/portswigger/dastardly:latest'
+            }
+        }
+        stage ("Docker run Dastardly from Burp Suite Scan") {
+            steps {
+                cleanWs()
+                sh '''
+                    docker run --user $(id -u) -v ${WORKSPACE}:${WORKSPACE}:rw \
+                    -e DASTARDLY_TARGET_URL=https://ginandjuice.shop/ \
+                    -e DASTARDLY_OUTPUT_FILE=${WORKSPACE}/dastardly-report.xml \
+                    public.ecr.aws/portswigger/dastardly:latest
+                '''
+            }
+        }
+    }
+    post {
+        always {
+            junit testResults: 'dastardly-report.xml', skipPublishingChecks: true
+        }
+    }
 }
